@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class MemberVO {
+public class MemberLoginParam {
     private String userId;
     private String pwd;
 }

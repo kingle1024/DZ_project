@@ -9,5 +9,18 @@
         	 *
         from member
    </select>
+    <select id="findById" resultType="com.dz.member.vo.MemberLoginParam">
+        select
+            *
+        from member
+        where userId = #{userId}
+    </select>
+    <insert id="save">
+        insert into member(
+            userId, pwd
+        ) values (
+                  #{userId}, #{pwd}
+                         )
 
+    </insert>
 </mapper>
