@@ -35,6 +35,7 @@ class MemberAPITest {
                 .userId("exist_testuser")
                 .pwd("dz")
                 .build();
+
         //when
         ResultActions resultActions = mvc.perform(post("/login")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -68,5 +69,25 @@ class MemberAPITest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status", equalTo(true)))
                 ;
+    }
+
+    @Test
+    void list() throws Exception {
+        MemberVO memberVO = MemberVO.builder()
+                .userId("notExist_testuser")
+                .pwd("dz")
+                .build();
+
+        //when
+        ResultActions resultActions = mvc.perform(get("/list")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(memberVO))
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print());
+
+        //then
+        resultActions
+                .andExpect(status().isOk())
+        ;
     }
 }
