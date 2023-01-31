@@ -7,8 +7,12 @@ import java.util.List;
 
 @Mapper
 public interface MemberDAO {
-    List<MemberVO> list();
+    List<MemberVO> list(String search);
     MemberLoginParam findById(MemberLoginParam memberLoginParam);
+    MemberVO findByIdVO(String userId);
+    long listSize(String search);
 
     boolean save(MemberVO memberVO);
+
+    boolean edit(MemberVO member);
 }

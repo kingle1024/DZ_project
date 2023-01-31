@@ -22,9 +22,8 @@ public class MemberServiceImpl implements MemberService{
     }
 
     @Override
-    public List<MemberVO> list() {
-
-        return memberDAO.list();
+    public List<MemberVO> list(String search) {
+        return memberDAO.list(search);
     }
 
     @Override
@@ -38,5 +37,13 @@ public class MemberServiceImpl implements MemberService{
         memberVO.setPwd(encryptHelper.encrypt(memberVO.getPwd()));
 
         return memberDAO.save(memberVO);
+    }
+
+    @Override
+    public boolean save(MemberVO memberVO) {
+        MemberVO member = memberDAO.findByIdVO(memberVO.getUserId());
+        member.setName(memberVO.getName());
+
+        return memberDAO.edit(member);
     }
 }

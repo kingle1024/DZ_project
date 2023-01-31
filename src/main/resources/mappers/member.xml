@@ -8,13 +8,30 @@
 		select
         	 *
         from member
-   </select>
+        where name like concat('%', #{search}, '%')
+        limit #{pageStart}, #{pageEnd}
+    </select>
+
+    <select id="listSize" parameterType="String" resultType="long">
+        select count(*)
+        from member
+        where name like concat('%', #{search}, '%')
+    </select>
+
     <select id="findById" resultType="com.dz.member.vo.MemberLoginParam">
         select
             *
         from member
         where userId = #{userId}
     </select>
+
+    <select id="findByIdVO" resultType="com.dz.member.vo.MemberVO">
+        select
+            *
+        from member
+        where userId = #{userId}
+    </select>
+
     <insert id="save">
         insert into member(
             userId, pwd
@@ -23,4 +40,9 @@
                          )
 
     </insert>
+    <update id="edit">
+        update member
+        set name = #{name}
+        where userId = #{userId}
+    </update>
 </mapper>
