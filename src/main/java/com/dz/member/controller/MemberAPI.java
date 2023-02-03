@@ -5,12 +5,11 @@ import com.dz.member.vo.MemberLoginParam;
 import com.dz.member.vo.MemberVO;
 import com.dz.util.JwtTokenProvider;
 import com.dz.util.PageUtil;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -18,12 +17,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Api(tags = "회원관리")
 @RestController
 @Slf4j
+@RequestMapping("/v1/member")
 public class MemberAPI {
     @Autowired
     MemberService memberService;
 
+    @ApiOperation(value = "리스트")
     @GetMapping("/list")
     public String list(){
         List<MemberVO> list = memberService.list("");
