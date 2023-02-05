@@ -9,7 +9,7 @@
         	 *
         from member
         where name like concat('%', #{search}, '%')
-        limit #{pageStart}, #{pageEnd}
+--         limit #{pageStart}, #{pageEnd}
     </select>
 
     <select id="listSize" parameterType="String" resultType="long">
@@ -34,15 +34,20 @@
 
     <insert id="save">
         insert into member(
-            userId, pwd
+            userId, pwd, name, role
         ) values (
-                  #{userId}, #{pwd}
-                         )
+                  #{userId}, #{pwd}, #{name}, #{role}
+         )
 
     </insert>
     <update id="edit">
         update member
         set name = #{name}
+        where userId = #{userId}
+    </update>
+    <update id="refreshTokenUpdate">
+        update member
+        set refresh_token = #{refresh_token}
         where userId = #{userId}
     </update>
 </mapper>

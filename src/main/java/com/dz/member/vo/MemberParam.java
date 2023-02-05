@@ -9,7 +9,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class MemberLoginParam {
+public class MemberParam {
     private String userId;
     private String pwd;
+    private String name;
 }

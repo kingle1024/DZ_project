@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+<body>
+  <h1>로그인</h1>
+  <form id="loginForm">
+    id : <input type="text" value="exist_testuser" id="userId" name="userId"><br/>
+    pw : <input type="password" id="pwd" name="pwd">
+      <input type="submit">
+  </form>
+
+  <button onclick="token()">리스트</button>
+  <button onclick="remove()">토큰 클리어</button> <br/>
+  <button onclick="ax()">[axios] 리스트 </button>
+  <button onclick="axlogin()">[axios] 로그인</button>
+
+  <script>
+      let form = document.querySelector("#loginForm");
+      form.addEventListener('submit', (event) => {
+          event.preventDefault();
+          var userId = document.getElementById("userId").value;
+          var password = document.getElementById("pwd").value;
+
+          let param = {
+              "userId" : userId,
+              "pwd" : password
+          }
+
+          fetch('/login', {
+              method : 'POST',
+              headers : {
+                  'Content-Type' : 'application/json; charset=utf-8'
+              },
+              body : JSON.stringify(param)
+          }).then(response => response.json())
+          .then(jsonResult => {
+              console.log(jsonResult);
+              localStorage.setItem("token", jsonResult.token);
+          });
+      });
+  </script>
+    <script>
+        function token(){
+            fetch('/api/list', {
+                method : 'POST',
+                headers : {
+                    'Authorization' : localStorage.getItem("token")
+                }
+            }).then(response => response.json())
+            .then(jsonResult => {
+                alert(jsonResult.list);
+                console.log(jsonResult.list);
+            });
+        }
+    </script>
+    <script>
+        function remove(){
+            localStorage.clear();
+            alert("클리어");
+        }
+    </script>
+    <script>
+      function ax() {
+        // ID로 사용자 요청
+        axios.get('/api/list')
+                // 응답(성공)
+                .then(response =>  {
+                  console.log(response);
+                })
+                // 응답(실패)
+                .catch(error => {
+                  console.log("request error");
+                  console.log(error);
+                })
+                // 응답(항상 실행)
+                .then(() => {
+                  // ...
+                });
+      }
+      function axlogin() {
+        var userId = document.getElementById("userId").value;
+        var password = document.getElementById("pwd").value;
+
+
+        // ID로 사용자 요청
+        axios.post('/login',{
+          userId : userId,
+          pwd : password
+        },{
+          headers : {
+              Refresh : 'refresh'
+          }
+        })
+          // 응답(성공)
+          .then(response => {
+            console.log("login success!!!!!!!!");
+
+            localStorage.setItem("Authorization", response.headers.get("Authorization"));
+            localStorage.setItem("RefreshToken", response.headers.get("RefreshToken"));
+            localStorage.setItem("Authoization_TIME", response.headers.get("Authoization_TIME"));
+
+          })
+          // 응답(실패)
+          .catch(error => {
+            console.log("request error");
+            console.log(error);
+          })
+          // 응답(항상 실행)
+          .then(() => {
+            // ...
+          });
+      }
+    </script>
+    <script>
+      // 요청 인터셉터 추가
+      axios.interceptors.request.use(
+              (config) => {
+                // 요청을 보내기 전에 수행할 일
+                console.log("================================");
+                console.log("interceptor config");
+                console.log(config);
+
+                const Authorization = localStorage.getItem("Authorization");
+                const RefreshToken = localStorage.getItem("RefreshToken");
+                if(Authorization != null) config.headers.set("Authorization", Authorization);
+
+                const time = localStorage.getItem("Authoization_TIME");
+
+                console.log("time > "+time);
+                if(time !== null){
+                    const auth_time = new Date(Number(time));
+                    auth_time.setMinutes(auth_time.getMinutes()+30);
+                    console.log("auth_time > " + auth_time);
+
+                    const nowTime = new Date();
+                    console.log("nowTime > " + nowTime);
+                    if(nowTime > auth_time){
+                        console.log("Token 시간 만료되어 RefreshToken 추가")
+                        config.headers.set("RefreshToken", RefreshToken);
+                    }
+                }
+
+                return config;
+              },
+              (error) => {
+                // 오류 요청을 보내기전 수행할 일
+                // ...
+                console.log("interceptor error");
+                return Promise.reject(error);
+              });
+
+      // 응답 인터셉터 추가
+      axios.interceptors.response.use(
+              function (response) {
+                // 응답 데이터를 가공
+                // ...
+                console.log("response ");
+                console.log(response);
+                return response;
+              },
+              function (error) {
+                // 오류 응답을 처리
+                // ...
+                console.log("error reject");
+                console.log(error);
+                console.log(error.config.url);
+
+                // axlogin();
+                // ax();
+
+                return Promise.reject(error);
+              });
+
+    </script>
+</body>
+</html>
