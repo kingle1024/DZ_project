@@ -23,7 +23,7 @@ public class SwaggerConfig {
 
     @Bean
     public Docket apiV1() {
-        version = "V1";
+        version = "v1";
         title = TITLE_FIX + version;
 
         return new Docket(DocumentationType.SWAGGER_2)
@@ -31,29 +31,14 @@ public class SwaggerConfig {
                 .groupName(version)
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("com.dz"))
-                .paths(PathSelectors.ant("/V1/**"))
+                .paths(PathSelectors.ant("/v1/**"))
                 .build()
                 .apiInfo(getApiInfo(title, version))
-                .securitySchemes(Collections.singletonList(getApiKey()))
+//                .securitySchemes(Collections.singletonList(getApiKey()))
                 .enable(true);
     }
 
-    @Bean
-    public Docket apiV2() {
-        version = "V2";
-        title = TITLE_FIX + version;
 
-        return new Docket(DocumentationType.SWAGGER_2)
-                .useDefaultResponseMessages(false)
-                .groupName(version)
-                .select()
-                .apis(RequestHandlerSelectors.basePackage("com.DZ_project"))
-                .paths(PathSelectors.ant("/V2/**"))
-                .build()
-                .apiInfo(getApiInfo(title, version))
-                .securitySchemes(Collections.singletonList(getApiKey()))
-                .enable(true);
-    }
 
     private ApiInfo getApiInfo(String title, String version) {
         return new ApiInfo(
@@ -68,7 +53,7 @@ public class SwaggerConfig {
         );
     }
 
-    private ApiKey getApiKey() {
-        return new ApiKey("jwtToken", "X-AUTH-TOKEN", "header");
-    }
+//    private ApiKey getApiKey() {
+//        return new ApiKey("jwtToken", "X-AUTH-TOKEN", "header");
+//    }
 }
