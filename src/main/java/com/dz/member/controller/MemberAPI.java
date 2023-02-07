@@ -2,8 +2,8 @@ package com.dz.member.controller;
 
 import com.dz.member.service.MemberService;
 import com.dz.member.vo.MemberLoginParam;
+import com.dz.member.vo.MemberParam;
 import com.dz.member.vo.MemberVO;
-import com.dz.util.JwtTokenProvider;
 import com.dz.util.PageUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -12,13 +12,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Api(tags = "회원관리")
 @RestController
+@RequestMapping("/api")
 @Slf4j
 @RequestMapping("/v1/member")
 public class MemberAPI {
@@ -27,7 +27,8 @@ public class MemberAPI {
 
     @ApiOperation(value = "리스트")
     @GetMapping("/list")
-    public String list(){
+    public Map<String, Object> list(){
+        log.info("list");
         List<MemberVO> list = memberService.list("");
 //        PageUtil pageUtil = productService.pageUtil(search, pageIndex, "product");
         // search, pageIndex
@@ -36,23 +37,39 @@ public class MemberAPI {
 
         System.out.println("util.getList() = " + util.getList());
         System.out.println("util.paper() = " + util.paper());
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("list", list);
+        return result;
+    }
+    @PostMapping("/list")
+    public Map<String, Object> postList(){
+        log.info("list");
+        List<MemberVO> list = memberService.list("");
+//        PageUtil pageUtil = productService.pageUtil(search, pageIndex, "product");
+        // search, pageIndex
+        PageUtil pageUtil = new PageUtil();
+        PageUtil util = pageUtil.getUtil("2","", list, 20);
 
-        return list.toString();
+        System.out.println("util.getList() = " + util.getList());
+        System.out.println("util.paper() = " + util.paper());
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("list", list);
+        return result;
     }
 
     @PostMapping("/login")
-    public Map<String, Object> login(@RequestBody MemberLoginParam memberLoginParam,
-                                     HttpServletResponse response){
-
+    public Map<String, Object> login(@RequestBody MemberLoginParam memberLoginParam
+                                     ){
+        log.info("들어오나 ? ");
         MemberLoginParam login = memberService.login(memberLoginParam);
         Map<String, Object> resultMap = new HashMap<>();
         log.info("login > {}", login);
 
         if(login != null){
             resultMap.put("status", true);
-            JwtTokenProvider jwtTokenProvider = new JwtTokenProvider();
-            String token = jwtTokenProvider.makeJwtToken(memberLoginParam);
-            log.info("token > {}", token);
+//            JwtTokenProvider jwtTokenProvider = new JwtTokenProvider();
+//            String token = "Bearer " + jwtTokenProvider.makeJwtToken(memberLoginParam);
+//            log.info("token > {}", token);
 //            response.setHeader("AUTHORIZATION", token);
         }else{
             resultMap.put("status", false);
@@ -61,9 +78,65 @@ public class MemberAPI {
         return resultMap;
     }
 
-    @PostMapping("/edit")
+    @GetMapping("/login")
+    public Map<String, Object> testlogin(){
+        MemberLoginParam memberLoginParam = MemberLoginParam.builder()
+                .userId("123")
+                .pwd("123")
+                .build();
+
+        MemberLoginParam login = memberService.login(memberLoginParam);
+        Map<String, Object> resultMap = new HashMap<>();
+        log.info("login > {}", login);
+
+        if(login != null){
+            resultMap.put("status", true);
+//            JwtTokenProvider jwtTokenProvider = new JwtTokenProvider();
+//            String token = "Bearer " + jwtTokenProvider.makeJwtToken(memberLoginParam);
+//            log.info("token > {}", token);
+//            response.setHeader("AUTHORIZATION", token);
+        }else{
+            resultMap.put("status", false);
+        }
+
+        return resultMap;
+    }
+
+    @GetMapping("/test/edit")
+    public Map<String, Object> testedit(){
+        System.out.println("MemberAPI.testedit");
+
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("status", true);
+
+        return resultMap;
+    }
+
+    @PostMapping("/test/edit")
+    public Map<String, Object> posttestedit(){
+        log.info("testEdit");
+
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("status", true);
+        resultMap.put("data", "data");
+
+        return resultMap;
+    }
+
+    @GetMapping("/abc/edit")
+    public Map<String, Object> abcedit(){
+        System.out.println("MemberAPI.abcedit");
+
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("status", true);
+
+        return resultMap;
+    }
+
+
+    @PostMapping("/member/edit")
     public Map<String, Object> edit(@RequestBody MemberVO memberVO,
-            HttpServletRequest request, HttpServletResponse response){
+            HttpServletRequest request){
         log.info("request auth > {}" , request.getHeader("AUTHORIZATION"));
 
 //        MemberVO memberVO = MemberVO.builder()
@@ -82,10 +155,10 @@ public class MemberAPI {
         return resultMap;
     }
 
-
     @PostMapping("/signup")
-    public Map<String, Object> signup(@RequestBody MemberVO memberVO){
-        boolean signup = memberService.signup(memberVO);
+    public Map<String, Object> signup(@RequestBody MemberParam memberParam){
+        log.info("join > ");
+        boolean signup = memberService.signup(memberParam);
         Map<String, Object> resultMap = new HashMap<>();
 
         if(signup){
@@ -95,6 +168,4 @@ public class MemberAPI {
         }
         return resultMap;
     }
-
-
 }

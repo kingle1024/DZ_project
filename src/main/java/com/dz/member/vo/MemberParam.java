@@ -1,6 +1,5 @@
 package com.dz.member.vo;
 
-import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,9 +9,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class MemberLoginParam {
-    @ApiModelProperty(notes = "회원 아이디")
+public class MemberParam {
     private String userId;
-    @ApiModelProperty(notes = "회원 비밀번호")
     private String pwd;
+    private String name;
 }
