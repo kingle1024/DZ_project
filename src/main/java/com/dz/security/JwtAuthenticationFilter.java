@@ -1,14 +1,11 @@
 package com.dz.security;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
 import com.dz.member.dao.MemberDAO;
 import com.dz.member.vo.MemberVO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import java.io.IOException;
-import java.util.Date;
 
 import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
@@ -63,6 +60,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         // Tip: 인증 프로바이더의 디폴트 암호화 방식은 BCryptPasswordEncoder
         // 결론은 인증 프로바이더에게 알려줄 필요가 없음.
         Authentication authentication = authenticationManager.authenticate(authenticationToken);
+        log.info("member authentication 조회 완료");
         PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal();
         log.info("principal > {}", principal);
 //        PrincipalDetails principalDetailis = (PrincipalDetails) authentication.getPrincipal();
@@ -81,17 +79,17 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         logger.info("successfulAuthentication");
         PrincipalDetails principalDetailis = (PrincipalDetails) authResult.getPrincipal();
 
-//        logger.debug("UserId :: {}", principalDetailis.getUser().getUserId());
-//        logger.debug("UserName :: {}", principalDetailis.getUser().getUserName());
+        long expiresTime = System.currentTimeMillis() + JwtProperties.EXPIRATION_ACCESS_TIME;
+        String accessToken = JwtTokenProvider.makeAccessToken(
+                principalDetailis.getMember().getUserId(),
+                principalDetailis.getMember().getName(),
+                principalDetailis.getMember().getRole()
+        );
 
-        long systemCurrentTimeMillis = System.currentTimeMillis();
-        String jwtToken = JWT.create().withSubject(principalDetailis.getMember().getUserId())
-                .withExpiresAt(new Date(systemCurrentTimeMillis + JwtProperties.EXPIRATION_ACCESS_TIME))
-                .withClaim(JwtProperties.DB_ID_COLUMN, principalDetailis.getMember().getUserId())
-                .withClaim("username", principalDetailis.getMember().getName())
-                .sign(Algorithm.HMAC512(JwtProperties.SECRET));
-
-        String refreshToken = JwtTokenProvider.makeRefreshToken(principalDetailis.getMember().getUserId(), principalDetailis.getMember().getName());
+        String refreshToken = JwtTokenProvider.makeRefreshToken(
+                principalDetailis.getMember().getUserId(),
+                principalDetailis.getMember().getName()
+        );
 
         log.info("username > {} ", principalDetailis.getMember().getUserId());
         log.info("refreshToken > {}", refreshToken);
@@ -101,8 +99,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         logger.info("★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★");
 
         response.setStatus(HttpServletResponse.SC_OK);
-        response.addHeader(JwtProperties.HEADER_ACCESS_STRING, JwtProperties.TOKEN_PREFIX + jwtToken);
-        response.addHeader("Authoization_TIME", String.valueOf(systemCurrentTimeMillis));
+        response.addHeader(JwtProperties.HEADER_ACCESS_STRING, JwtProperties.TOKEN_PREFIX + accessToken);
+        response.addHeader("Authoization_TIME", String.valueOf(expiresTime));
         response.addHeader(JwtProperties.HEADER_REFRESH_TOKEN, JwtProperties.TOKEN_PREFIX + refreshToken);
         response.setContentType("application/json;charset=UTF-8");
 

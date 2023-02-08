@@ -8,6 +8,15 @@ import java.util.Date;
 
 @Slf4j
 public class JwtTokenProvider {
+    public static String makeAccessToken(String userId, String name, String role){
+        log.info("");
+        return JWT.create().withSubject(userId)
+                .withExpiresAt(new Date(System.currentTimeMillis() + JwtProperties.EXPIRATION_ACCESS_TIME))
+                .withClaim(JwtProperties.DB_ID_COLUMN, userId)
+                .withClaim("username", name)
+                .withClaim("role", role)
+                .sign(Algorithm.HMAC512(JwtProperties.SECRET));
+    }
     public static String makeRefreshToken(String userId, String name){
         log.info("");
         return JWT.create().withSubject(userId)
@@ -16,4 +25,5 @@ public class JwtTokenProvider {
                 .withClaim("username", name)
                 .sign(Algorithm.HMAC512(JwtProperties.SECRET));
     }
+
 }
