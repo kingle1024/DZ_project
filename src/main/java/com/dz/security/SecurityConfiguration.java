@@ -39,8 +39,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .addFilter(new JwtAuthorizationFilter(authenticationManager(), memberDAO));
 
         http
+
                 .authorizeRequests()
-                .mvcMatchers( "/login", "/api/login", "/signup", "/loginform").permitAll() //** 홈페이지, login
+                .mvcMatchers( "/api/member/**",
+                        "/api/board/**","/", "/login", "/api/login", "/api/signup", "/loginform").permitAll() //** 홈페이지, login
                 .anyRequest().hasAuthority("ROLE_USER")
         ;
 
