@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+      PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.dz.board.dao.BoardDAO">
+    <select id="list" resultType="com.dz.board.vo.BoardVO">
+        select * from react_board where delete_yn = false
+        order by id desc
+        limit 10
+    </select>
+    <select id="findById" resultType="com.dz.board.vo.BoardVO">
+        select * from react_board
+        where id = #{id}
+    </select>
+    <insert id="insert">
+        insert into react_board(
+            title, content, delete_yn
+        )values (
+             #{title}, #{content}, 0
+                        )
+    </insert>
+    <update id="save">
+        update react_board
+        set title = #{title}, content = #{content}
+        where id = #{id}
+    </update>
+    <update id="delete">
+        update react_board
+        set delete_yn = true
+        where id = #{id}
+    </update>
+</mapper>
