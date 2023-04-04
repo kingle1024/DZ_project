@@ -5,6 +5,8 @@ import com.dz.member.vo.MemberLoginParam;
 import com.dz.member.vo.MemberParam;
 import com.dz.member.vo.MemberVO;
 import com.dz.util.PageUtil;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -14,13 +16,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Api(tags = "회원관리")
 @RestController
 @RequestMapping("/api")
 @Slf4j
+@RequestMapping("/v1/member")
 public class MemberAPI {
     @Autowired
     MemberService memberService;
 
+    @ApiOperation(value = "리스트")
     @GetMapping("/list")
     public Map<String, Object> list(){
         log.info("list");
