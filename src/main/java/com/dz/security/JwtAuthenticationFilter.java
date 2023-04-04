@@ -107,6 +107,9 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         JSONObject jsonObject = new JSONObject();
 
         jsonObject.put("status", true);
+        jsonObject.put("userName", principalDetailis.getMember().getName());
+        jsonObject.put("userId", principalDetailis.getMember().getUserId());
+
         response.getWriter().print(jsonObject);
     }
 }
