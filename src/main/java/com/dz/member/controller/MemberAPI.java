@@ -25,8 +25,6 @@ public class MemberAPI {
     public Map<String, Object> list(){
         log.info("list");
         List<MemberVO> list = memberService.list("");
-//        PageUtil pageUtil = productService.pageUtil(search, pageIndex, "product");
-        // search, pageIndex
         PageUtil pageUtil = new PageUtil();
         PageUtil util = pageUtil.getUtil("2","", list, 20);
 
@@ -40,8 +38,6 @@ public class MemberAPI {
     public Map<String, Object> postList(){
         log.info("list");
         List<MemberVO> list = memberService.list("");
-//        PageUtil pageUtil = productService.pageUtil(search, pageIndex, "product");
-        // search, pageIndex
         PageUtil pageUtil = new PageUtil();
         PageUtil util = pageUtil.getUtil("2","", list, 20);
 
@@ -55,7 +51,6 @@ public class MemberAPI {
     @PostMapping("/login")
     public Map<String, Object> login(@RequestBody MemberLoginParam memberLoginParam
                                      ){
-        log.info("들어오나 ? ");
         MemberLoginParam login = memberService.login(memberLoginParam);
         Map<String, Object> resultMap = new HashMap<>();
         log.info("login > {}", login);
