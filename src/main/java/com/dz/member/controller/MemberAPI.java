@@ -5,6 +5,8 @@ import com.dz.member.vo.MemberLoginParam;
 import com.dz.member.vo.MemberParam;
 import com.dz.member.vo.MemberVO;
 import com.dz.util.PageUtil;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -14,19 +16,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Api(tags = "회원관리")
 @RestController
 @RequestMapping("/api")
 @Slf4j
+@RequestMapping("/v1/member")
 public class MemberAPI {
     @Autowired
     MemberService memberService;
 
+    @ApiOperation(value = "리스트")
     @GetMapping("/list")
     public Map<String, Object> list(){
         log.info("list");
         List<MemberVO> list = memberService.list("");
-//        PageUtil pageUtil = productService.pageUtil(search, pageIndex, "product");
-        // search, pageIndex
         PageUtil pageUtil = new PageUtil();
         PageUtil util = pageUtil.getUtil("2","", list, 20);
 
@@ -40,8 +43,6 @@ public class MemberAPI {
     public Map<String, Object> postList(){
         log.info("list");
         List<MemberVO> list = memberService.list("");
-//        PageUtil pageUtil = productService.pageUtil(search, pageIndex, "product");
-        // search, pageIndex
         PageUtil pageUtil = new PageUtil();
         PageUtil util = pageUtil.getUtil("2","", list, 20);
 
@@ -55,7 +56,6 @@ public class MemberAPI {
     @PostMapping("/login")
     public Map<String, Object> login(@RequestBody MemberLoginParam memberLoginParam
                                      ){
-        log.info("들어오나 ? ");
         MemberLoginParam login = memberService.login(memberLoginParam);
         Map<String, Object> resultMap = new HashMap<>();
         log.info("login > {}", login);
