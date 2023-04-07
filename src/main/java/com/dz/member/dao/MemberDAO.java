@@ -10,7 +10,9 @@ import java.util.List;
 @Mapper
 public interface MemberDAO {
     List<MemberVO> list(String search);
-    MemberLoginParam findById(MemberLoginParam memberLoginParam);
+    MemberLoginParam findByLoginParam(MemberLoginParam memberLoginParam);
+    MemberVO findById(String userId);
+
     MemberVO findByIdVO(String userId);
     long listSize(String search);
 
