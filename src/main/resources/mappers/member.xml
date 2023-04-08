@@ -18,7 +18,13 @@
         where name like concat('%', #{search}, '%')
     </select>
 
-    <select id="findById" resultType="com.dz.member.vo.MemberLoginParam">
+    <select id="findByLoginParam" resultType="com.dz.member.vo.MemberLoginParam">
+        select
+            *
+        from member
+        where userId = #{userId}
+    </select>
+    <select id="findById" resultType="com.dz.member.vo.MemberVO">
         select
             *
         from member
@@ -50,4 +56,5 @@
         set refresh_token = #{refresh_token}
         where userId = #{userId}
     </update>
+
 </mapper>
