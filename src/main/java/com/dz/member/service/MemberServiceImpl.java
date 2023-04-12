@@ -41,12 +41,15 @@ public class MemberServiceImpl implements MemberService{
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(memberLoginParam.getUserId(), memberLoginParam.getPwd());
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
-        MemberLoginParam result = memberDAO.findById(memberLoginParam);
+        MemberLoginParam result = memberDAO.findByLoginParam(memberLoginParam);
         return result;
     }
 
     @Override
     public boolean signup(MemberParam memberParam) {
+        MemberVO byId = memberDAO.findById(memberParam.getUserId());
+        if(byId != null) return false;
+
         String refreshToken = JWT.create().withSubject(memberParam.getName())
                 .withExpiresAt(new Date(System.currentTimeMillis() + JwtProperties.EXPIRATION_ACCESS_TIME))
                 .withClaim(JwtProperties.DB_ID_COLUMN, memberParam.getUserId())
@@ -61,6 +64,7 @@ public class MemberServiceImpl implements MemberService{
                 .refresh_token(refreshToken)
                 .build();
         System.out.println("memberVO = " + memberParam);
+
         return memberDAO.save(memberVO);
     }
 
