@@ -99,7 +99,7 @@ public class MemberAPI {
 
     @GetMapping("/test/edit")
     public Map<String, Object> testedit(){
-        System.out.println("MemberAPI.testedit");
+        System.out.println("ProMemberAPI.testedit");
 
         Map<String, Object> resultMap = new HashMap<>();
         resultMap.put("status", true);
@@ -120,7 +120,7 @@ public class MemberAPI {
 
     @GetMapping("/abc/edit")
     public Map<String, Object> abcedit(){
-        System.out.println("MemberAPI.abcedit");
+        System.out.println("ProMemberAPI.abcedit");
 
         Map<String, Object> resultMap = new HashMap<>();
         resultMap.put("status", true);
@@ -163,4 +163,6 @@ public class MemberAPI {
         }
         return resultMap;
     }
+
+
 }
